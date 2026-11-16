@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react';
-import { API_BASE_URL } from '../services/api';
+import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../services/api";
 
 function RecetasSection() {
   const [recetas, setRecetas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Estados del formulario de creación
-  const [nombre, setNombre] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [tiempoPreparacion, setTiempoPreparacion] = useState('');
-  const [municipioOrigen, setMunicipioOrigen] = useState('');
+  // Estados del formulario para crear y editar
+  const [nombre, setNombre] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [tiempoPreparacion, setTiempoPreparacion] = useState("");
+  const [municipioOrigen, setMunicipioOrigen] = useState("");
+  const [editandoId, setEditandoId] = useState(null);
   const [enviando, setEnviando] = useState(false);
 
   // 1. Listar recetas al cargar el componente (GET)
@@ -25,7 +26,9 @@ function RecetasSection() {
       const datos = await respuesta.json();
       setRecetas(datos);
     } catch (err) {
-      setError('No se pudieron cargar las recetas. Verifica que el servidor Django esté encendido.');
+      setError(
+        "No se pudieron cargar las recetas. Verifica que el servidor Django esté encendido.",
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -36,13 +39,30 @@ function RecetasSection() {
     cargarRecetas();
   }, []);
 
-  // 2. Crear nueva receta (POST)
-  const manejarCrear = async (e) => {
+  const iniciarEdicion = (receta) => {
+    setEditandoId(receta.id);
+    setNombre(receta.nombre);
+    setDescripcion(receta.descripcion);
+    setTiempoPreparacion(receta.tiempo_preparacion);
+    setMunicipioOrigen(receta.municipio_origen);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const cancelarEdicion = () => {
+    setEditandoId(null);
+    setNombre("");
+    setDescripcion("");
+    setTiempoPreparacion("");
+    setMunicipioOrigen("");
+  };
+
+  // 2. Crear (POST) o actualizar (PUT) receta
+  const manejarGuardar = async (e) => {
     e.preventDefault();
     setEnviando(true);
     setError(null);
 
-    const nuevaReceta = {
+    const datosReceta = {
       nombre,
       descripcion,
       tiempo_preparacion: Number(tiempoPreparacion),
@@ -50,39 +70,80 @@ function RecetasSection() {
     };
 
     try {
-      const respuesta = await fetch(`${API_BASE_URL}/recetas/`, {
-        method: 'POST',
+      const url = editandoId
+        ? `${API_BASE_URL}/recetas/${editandoId}/`
+        : `${API_BASE_URL}/recetas/`;
+
+      const metodo = editandoId ? "PUT" : "POST";
+
+      const respuesta = await fetch(url, {
+        method: metodo,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(nuevaReceta),
+        body: JSON.stringify(datosReceta),
       });
 
       if (!respuesta.ok) {
-        throw new Error('Error al guardar la receta');
+        throw new Error("Error al guardar los cambios de la receta");
       }
 
-      const recetaCreada = await respuesta.json();
-      setRecetas([recetaCreada, ...recetas]);
+      const recetaRespuesta = await respuesta.json();
 
-      // Limpiar formulario
-      setNombre('');
-      setDescripcion('');
-      setTiempoPreparacion('');
-      setMunicipioOrigen('');
+      if (editandoId) {
+        setRecetas(
+          recetas.map((item) =>
+            item.id === editandoId ? recetaRespuesta : item,
+          ),
+        );
+      } else {
+        setRecetas([recetaRespuesta, ...recetas]);
+      }
+
+      cancelarEdicion();
     } catch (err) {
-      setError('No se pudo crear la receta. Revisa los datos e intenta nuevamente.');
+      setError(
+        "No se pudo guardar la receta. Revisa la conexión con el servidor.",
+      );
       console.error(err);
     } finally {
       setEnviando(false);
     }
   };
 
+  const manejarEliminar = async (id) => {
+    const confirmar = window.confirm(
+      "¿Seguro que deseas eliminar esta receta?",
+    );
+    if (!confirmar) return;
+
+    setError(null);
+
+    try {
+      const respuesta = await fetch(`${API_BASE_URL}/recetas/${id}/`, {
+        method: "DELETE",
+      });
+
+      if (!respuesta.ok) {
+        throw new Error("No se pudo eliminar la receta");
+      }
+
+      setRecetas(recetas.filter((receta) => receta.id !== id));
+
+      if (editandoId === id) {
+        cancelarEdicion();
+      }
+    } catch (err) {
+      setError("Error al intentar eliminar la receta.");
+      console.error(err);
+    }
+  };
+
   return (
     <div>
       {/* Formulario de Creación */}
-      <form className="formulario-card" onSubmit={manejarCrear}>
-        <h3>Nueva Receta Caucana</h3>
+      <form className="formulario-card" onSubmit={manejarGuardar}>
+        <h3>{editandoId ? "Editar Receta Caucana" : "Nueva Receta Caucana"}</h3>
 
         <div className="fila-doble">
           <div className="campo">
@@ -133,14 +194,32 @@ function RecetasSection() {
 
         <div className="acciones-form">
           <button type="submit" className="btn-primario" disabled={enviando}>
-            {enviando ? 'Guardando...' : 'Guardar Receta'}
+            {enviando
+              ? "Guardando..."
+              : editandoId
+                ? "Actualizar Receta"
+                : "Guardar Receta"}
           </button>
+
+          {editandoId && (
+            <button
+              type="button"
+              className="btn-secundario"
+              onClick={cancelarEdicion}
+            >
+              Cancelar
+            </button>
+          )}
         </div>
       </form>
 
       {/* Estados de Carga y Error */}
       {error && <div className="alerta-error">{error}</div>}
-      {loading && <div className="alerta-carga">Cargando recetas desde el servidor...</div>}
+      {loading && (
+        <div className="alerta-carga">
+          Cargando recetas desde el servidor...
+        </div>
+      )}
 
       {/* Listado de Recetas */}
       {!loading && recetas.length === 0 && !error && (
@@ -152,11 +231,33 @@ function RecetasSection() {
           <article key={receta.id} className="tarjeta">
             <div>
               <h4>{receta.nombre}</h4>
+
               <div className="etiquetas">
                 <span className="badge">📍 {receta.municipio_origen}</span>
-                <span className="badge">⏱️ {receta.tiempo_preparacion} min</span>
+                <span className="badge">
+                  ⏱️ {receta.tiempo_preparacion} min
+                </span>
               </div>
+
               <p>{receta.descripcion}</p>
+            </div>
+
+            <div className="acciones-tarjeta">
+              <button
+                type="button"
+                className="btn-editar"
+                onClick={() => iniciarEdicion(receta)}
+              >
+                Editar
+              </button>
+
+              <button
+                type="button"
+                className="btn-eliminar"
+                onClick={() => manejarEliminar(receta.id)}
+              >
+                Eliminar
+              </button>
             </div>
           </article>
         ))}
