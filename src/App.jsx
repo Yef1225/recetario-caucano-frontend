@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import RecetasSection from './components/RecetasSection';
+import IngredientesSection from './components/IngredientesSection';
 import './App.css';
 
 function App() {
@@ -32,9 +33,8 @@ function App() {
             <RecetasSection />
           </section>
         ) : (
-          <section className="panel-pendiente">
-            <h2>Gestión de Ingredientes</h2>
-            <p>Módulo asignado a Carlos David Caicedo.</p>
+          <section>
+            <IngredientesSection />
           </section>
         )}
       </main>
