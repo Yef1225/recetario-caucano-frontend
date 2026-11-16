@@ -1,0 +1,221 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+
+.contenedor-principal {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.encabezado {
+  background: linear-gradient(135deg, #7c2d12, #9a3412);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(124, 45, 18, 0.15);
+}
+
+.encabezado h1 {
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.encabezado p {
+  color: #fed7aa;
+  margin-bottom: 1.5rem;
+}
+
+.navegacion {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn-tab {
+  padding: 0.6rem 1.4rem;
+  border: 2px solid #fed7aa;
+  background: transparent;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-tab.activo,
+.btn-tab:hover {
+  background: white;
+  color: #7c2d12;
+}
+
+.formulario-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.formulario-card h3 {
+  margin-bottom: 1rem;
+  color: #7c2d12;
+}
+
+.campo {
+  margin-bottom: 1rem;
+}
+
+.campo label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.campo input,
+.campo textarea,
+.campo select {
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.fila-doble {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.acciones-form {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-primario {
+  background-color: #7c2d12;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primario:hover {
+  background-color: #9a3412;
+}
+
+.btn-secundario {
+  background-color: #64748b;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.grid-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.tarjeta {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 10px;
+  border-left: 5px solid #7c2d12;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tarjeta h4 {
+  font-size: 1.15rem;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.etiquetas {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tarjeta p {
+  font-size: 0.92rem;
+  color: #475569;
+  margin-bottom: 1rem;
+  line-height: 1.45;
+}
+
+.acciones-tarjeta {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-editar {
+  background: #0284c7;
+  color: white;
+  border: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.btn-eliminar {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.alerta-carga {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.alerta-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
