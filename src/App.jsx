@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import RecetasSection from './components/RecetasSection';
 import './App.css';
 
 function App() {
@@ -28,8 +29,7 @@ function App() {
       <main className="contenido">
         {vistaActiva === 'recetas' ? (
           <section>
-            <h2>Gestión de Recetas</h2>
-            {/* Aquí conectaremos los componentes de Recetas en el Commit 2 */}
+            <RecetasSection />
           </section>
         ) : (
           <section className="panel-pendiente">
